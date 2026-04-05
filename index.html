@@ -174,18 +174,20 @@ let saving = false;
 
 async function loadData() {
   try {
-    const url = `${API}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
-    const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, cache: 'no-store' });
+    const rawUrl = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${FILE_PATH}?_t=${Date.now()}`;
+    const res = await fetch(rawUrl, { cache: 'no-store' });
     if (!res.ok) throw new Error('Failed to load');
-    const json = await res.json();
-    fileSha = json.sha;
-    const content = atob(json.content.replace(/\n/g, ''));
-    const decoded = new TextDecoder().decode(Uint8Array.from(content, c => c.charCodeAt(0)));
-    data = JSON.parse(decoded);
+    data = await res.json();
+    if (isAdmin && !fileSha) {
+      const apiRes = await fetch(`${API}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+        headers: { 'Accept': 'application/vnd.github.v3+json', 'Authorization': 'token ' + getToken() }
+      });
+      if (apiRes.ok) { const j = await apiRes.json(); fileSha = j.sha; }
+    }
     render();
   } catch (e) {
     console.error(e);
-    document.getElementById('fList').innerHTML = `<div class="loading" style="color:#f87171">Failed to load data.</div>`;
+    document.getElementById('fList').innerHTML = `<div class="loading" style="color:#f87171">Failed to load data. Try refreshing.</div>`;
   }
 }
 
