@@ -1,0 +1,25 @@
+{
+  "fixes": {
+    "f1":  { "id": "f1",  "task": "Template rendering error — raw code visible to visitors", "priority": "URGENT", "done": false, "date": "" },
+    "f2":  { "id": "f2",  "task": "Chat widget exposes admin settings to visitors", "priority": "URGENT", "done": false, "date": "" },
+    "f3":  { "id": "f3",  "task": "About page returns 403 error", "priority": "URGENT", "done": false, "date": "" },
+    "f4":  { "id": "f4",  "task": "\"Get Started\" sends visitors to a different-looking subdomain", "priority": "URGENT", "done": false, "date": "" },
+    "f5":  { "id": "f5",  "task": "Homepage pricing — show Bronze/Silver/Diamond only", "priority": "HIGH", "done": false, "date": "" },
+    "f6":  { "id": "f6",  "task": "Auto-detect currency by visitor location", "priority": "HIGH", "done": false, "date": "" },
+    "f7":  { "id": "f7",  "task": "Duplicate \"Hosting Solutions\" section with conflicting prices", "priority": "HIGH", "done": false, "date": "" },
+    "f8":  { "id": "f8",  "task": "Standardize uptime to 99.9% everywhere", "priority": "HIGH", "done": false, "date": "" },
+    "f9":  { "id": "f9",  "task": "Cloud Hosting dead link — rename to Linux VPS", "priority": "MEDIUM", "done": false, "date": "" },
+    "f10": { "id": "f10", "task": "VPS plans — add human-readable names", "priority": "LOW", "done": false, "date": "" },
+    "f11": { "id": "f11", "task": "Remove fake \"Live\" indicators from dashboard", "priority": "MEDIUM", "done": false, "date": "" },
+    "f12": { "id": "f12", "task": "Contact page — add response time reassurance", "priority": "LOW", "done": false, "date": "" },
+    "f13": { "id": "f13", "task": "WordPress \"20x faster\" — add the baseline", "priority": "LOW", "done": false, "date": "" },
+    "f14": { "id": "f14", "task": "Replace misleading \"<1ms\" claims", "priority": "MEDIUM", "done": false, "date": "" },
+    "f15": { "id": "f15", "task": "Remove countdown timer from homepage", "priority": "HIGH", "done": false, "date": "" },
+    "f16": { "id": "f16", "task": "Homepage clutter — one CTA per section", "priority": "MEDIUM", "done": false, "date": "" },
+    "f17": { "id": "f17", "task": "Mobile — chat widget blocks 82% of screen", "priority": "HIGH", "done": false, "date": "" },
+    "f18": { "id": "f18", "task": "Mobile — font sizes too small for readability", "priority": "HIGH", "done": false, "date": "" }
+  },
+  "pending": {
+    "p1": { "id": "p1", "task": "WordPress hosting — provide feature comparison matrix", "done": false, "date": "" }
+  }
+}

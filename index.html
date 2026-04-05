@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hostzera UX Progress</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#0a0b10;color:#e1e4ea;min-height:100vh}
+  .dash{max-width:1200px;margin:0 auto;padding:32px 24px}
+
+  .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:36px;flex-wrap:wrap;gap:16px}
+  .brand{display:flex;align-items:center;gap:14px}
+  .brand-icon{width:44px;height:44px;background:linear-gradient(135deg,#22c55e,#16a34a);border-radius:14px;display:flex;align-items:center;justify-content:center}
+  .brand-icon svg{width:24px;height:24px}
+  .brand h1{font-size:22px;font-weight:800;letter-spacing:-0.5px}
+  .mbadge{display:inline-block;font-size:10px;font-weight:700;padding:3px 10px;border-radius:6px;margin-left:10px;letter-spacing:1px;text-transform:uppercase}
+  .mbadge.admin{background:rgba(249,115,22,.15);color:#fb923c;border:1px solid rgba(249,115,22,.3)}
+  .mbadge.viewer{background:rgba(34,211,238,.12);color:#22d3ee;border:1px solid rgba(34,211,238,.25)}
+  .top-r{display:flex;align-items:center;gap:12px}
+  .live-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .live-txt{font-size:12px;color:#22c55e;font-weight:600}
+  .saving-txt{font-size:12px;color:#facc15;font-weight:600;display:none}
+
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:32px}
+  .st{background:#12131a;border:1px solid #1e2030;border-radius:16px;padding:22px 20px;position:relative;overflow:hidden}
+  .st::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+  .st.c1::before{background:linear-gradient(90deg,#22c55e,#4ade80)}
+  .st.c2::before{background:linear-gradient(90deg,#ef4444,#f87171)}
+  .st.c3::before{background:linear-gradient(90deg,#f97316,#fb923c)}
+  .st.c4::before{background:linear-gradient(90deg,#eab308,#facc15)}
+  .st.c5::before{background:linear-gradient(90deg,#94a3b8,#cbd5e1)}
+  .sv{font-size:36px;font-weight:900;line-height:1;margin-bottom:6px}
+  .st.c1 .sv{color:#22c55e}.st.c2 .sv{color:#ef4444}.st.c3 .sv{color:#f97316}.st.c4 .sv{color:#eab308}.st.c5 .sv{color:#94a3b8}
+  .sl{font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+
+  .sec{background:#12131a;border:1px solid #1e2030;border-radius:18px;padding:28px;margin-bottom:20px}
+  .sec-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+  .sec-t{font-size:17px;font-weight:700}
+  .sec-c{font-size:14px;color:#6b7280}.sec-c b{color:#e1e4ea}
+
+  .pb{height:10px;background:#1a1b25;border-radius:10px;overflow:hidden;margin-bottom:24px}
+  .pb-f{height:100%;border-radius:10px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+  .pb-f.green{background:linear-gradient(90deg,#22c55e,#4ade80)}
+
+  .filters{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .fchip{font-size:11px;font-weight:600;padding:5px 14px;border-radius:8px;cursor:pointer;border:1px solid #1e2030;background:transparent;color:#6b7280;transition:all .2s}
+  .fchip:hover{border-color:#3a3d4a;color:#e1e4ea}
+  .fchip.active{background:#1e2030;color:#e1e4ea;border-color:#2a2d3a}
+
+  .tr{display:flex;align-items:center;gap:14px;padding:14px 16px;background:#0a0b10;border-radius:12px;margin-bottom:8px;border:1px solid transparent;transition:border-color .2s,opacity .3s}
+  .tr:hover{border-color:#1e2030}
+  .tr.done{opacity:.45}
+  .cb{width:24px;height:24px;border-radius:7px;border:2px solid #2a2d3a;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+  .admin .cb{cursor:pointer}
+  .admin .cb:hover{border-color:#22c55e;background:rgba(34,197,94,.1)}
+  .tr.done .cb{background:#22c55e;border-color:#22c55e}
+  .cb svg{width:14px;height:14px;stroke:white;stroke-width:3;fill:none;display:none}
+  .tr.done .cb svg{display:block}
+  .tn{flex:1;font-size:14px;font-weight:500;line-height:1.5}
+  .tr.done .tn{text-decoration:line-through;color:#4b5563}
+  .badge{font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0}
+  .badge-URGENT{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.25)}
+  .badge-HIGH{background:rgba(249,115,22,.12);color:#fb923c;border:1px solid rgba(249,115,22,.25)}
+  .badge-MEDIUM{background:rgba(234,179,8,.12);color:#facc15;border:1px solid rgba(234,179,8,.25)}
+  .badge-LOW{background:rgba(148,163,184,.12);color:#94a3b8;border:1px solid rgba(148,163,184,.25)}
+  .badge-PENDING{background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.25)}
+  .td{font-size:11px;color:#374151;flex-shrink:0;min-width:60px;text-align:right}
+  .tr.done .td{color:#22c55e}
+
+  .toast{position:fixed;bottom:24px;right:24px;background:#22c55e;color:#0a0b10;padding:12px 24px;border-radius:12px;font-size:13px;font-weight:700;transform:translateY(100px);opacity:0;transition:all .3s;z-index:999}
+  .toast.show{transform:translateY(0);opacity:1}
+  .toast.err{background:#ef4444;color:white}
+
+  .footer{text-align:center;padding:32px 0 16px;color:#2a2d3a;font-size:12px}
+  .loading{text-align:center;padding:60px;color:#6b7280}
+  .spinner{width:36px;height:36px;border:3px solid #1e2030;border-top-color:#22c55e;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  .pending-sec{margin-top:12px}
+  .pending-label{font-size:13px;color:#a78bfa;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .pending-dot{width:6px;height:6px;background:#a78bfa;border-radius:50%}
+
+  @media(max-width:768px){
+    .stats{grid-template-columns:repeat(3,1fr)}.sv{font-size:28px}
+    .top{flex-direction:column;align-items:flex-start}.dash{padding:20px 14px}
+  }
+  @media(max-width:480px){
+    .brand h1{font-size:17px}.stats{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
+</head>
+<body>
+
+<div class="dash">
+  <div class="top">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      </div>
+      <div>
+        <h1>HOSTZERA UX <span class="mbadge" id="modeBadge"></span></h1>
+      </div>
+    </div>
+    <div class="top-r">
+      <span class="saving-txt" id="savingTxt">Saving...</span>
+      <div class="live-dot"></div>
+      <span class="live-txt">LIVE</span>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="st c1"><div class="sv" id="sAll">0%</div><div class="sl">Overall</div></div>
+    <div class="st c2"><div class="sv" id="sUrg">0</div><div class="sl">Urgent Left</div></div>
+    <div class="st c3"><div class="sv" id="sHigh">0</div><div class="sl">High Left</div></div>
+    <div class="st c4"><div class="sv" id="sMed">0</div><div class="sl">Medium Left</div></div>
+    <div class="st c5"><div class="sv" id="sDone">0/18</div><div class="sl">Done</div></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-h">
+      <div class="sec-t">UX Fixes</div>
+      <div class="sec-c"><b id="fC">0</b> / 18 done</div>
+    </div>
+    <div class="pb"><div class="pb-f green" id="fBar" style="width:0%"></div></div>
+    <div class="filters">
+      <button class="fchip active" onclick="filt('ALL',this)">All</button>
+      <button class="fchip" onclick="filt('URGENT',this)">Urgent (4)</button>
+      <button class="fchip" onclick="filt('HIGH',this)">High (7)</button>
+      <button class="fchip" onclick="filt('MEDIUM',this)">Medium (4)</button>
+      <button class="fchip" onclick="filt('LOW',this)">Low (3)</button>
+    </div>
+    <div id="fList"><div class="loading"><div class="spinner"></div>Loading...</div></div>
+
+    <div class="pending-sec">
+      <div class="pending-label"><div class="pending-dot"></div>Pending Your Input</div>
+      <div id="pList"></div>
+    </div>
+  </div>
+
+  <div class="footer">Hostzera UX Dashboard — Auto-refreshes every 60 seconds</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const REPO_OWNER = 'khaledabdelaziz1330-dot';
+const REPO_NAME = 'hostzera-ux-dashboard';
+const FILE_PATH = 'data.json';
+const ADMIN_KEY = 'hostzera2026';
+const API = 'https://api.github.com';
+
+let data = { fixes: {}, pending: {} };
+let fileSha = '';
+let isAdmin = new URLSearchParams(window.location.search).get('key') === ADMIN_KEY;
+let currentFilter = 'ALL';
+let saving = false;
+
+(async function init() {
+  const badge = document.getElementById('modeBadge');
+  if (isAdmin) {
+    badge.textContent = 'ADMIN';
+    badge.className = 'mbadge admin';
+    document.querySelector('.dash').classList.add('admin');
+  } else {
+    badge.textContent = 'VIEWER';
+    badge.className = 'mbadge viewer';
+  }
+  await loadData();
+  setInterval(loadData, 60000);
+})();
+
+async function loadData() {
+  try {
+    const url = `${API}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+    const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, cache: 'no-store' });
+    if (!res.ok) throw new Error('Failed to load');
+    const json = await res.json();
+    fileSha = json.sha;
+    const content = atob(json.content.replace(/\n/g, ''));
+    const decoded = new TextDecoder().decode(Uint8Array.from(content, c => c.charCodeAt(0)));
+    data = JSON.parse(decoded);
+    render();
+  } catch (e) {
+    console.error(e);
+    document.getElementById('fList').innerHTML = `<div class="loading" style="color:#f87171">Failed to load data.</div>`;
+  }
+}
+
+async function saveData() {
+  if (saving) return;
+  saving = true;
+  document.getElementById('savingTxt').style.display = 'inline';
+  try {
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    const url = `${API}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`;
+    const getRes = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' }, cache: 'no-store' });
+    if (getRes.ok) { const c = await getRes.json(); fileSha = c.sha; }
+    const res = await fetch(url, {
+      method: 'PUT',
+      headers: { 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json', 'Authorization': 'token ' + getToken() },
+      body: JSON.stringify({ message: 'Update UX progress', content, sha: fileSha })
+    });
+    if (!res.ok) { const err = await res.json(); throw new Error(err.message); }
+    const result = await res.json();
+    fileSha = result.content.sha;
+    showToast('Saved');
+  } catch (e) {
+    console.error(e);
+    showToast('Save failed — check token', true);
+  } finally {
+    saving = false;
+    document.getElementById('savingTxt').style.display = 'none';
+  }
+}
+
+function getToken() {
+  let token = localStorage.getItem('gh_token');
+  if (!token) {
+    token = prompt('Enter your GitHub Personal Access Token.\n\nYou can use the same token from the SEO dashboard.\n\nGet one at: github.com > Settings > Developer settings > Personal access tokens > Tokens (classic) > Generate new token > Check "repo" scope.');
+    if (token) localStorage.setItem('gh_token', token);
+  }
+  return token;
+}
+
+function toggleTask(section, id) {
+  if (!isAdmin) return;
+  const task = data[section][id];
+  if (!task) return;
+  task.done = !task.done;
+  task.date = task.done ? new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+  render();
+  saveData();
+}
+
+function render() {
+  renderFixes();
+  renderPending();
+  updateStats();
+}
+
+function renderFixes() {
+  const el = document.getElementById('fList');
+  const tasks = Object.values(data.fixes).sort((a, b) => {
+    const o = { URGENT: 0, HIGH: 1, MEDIUM: 2, LOW: 3 };
+    return (o[a.priority] ?? 4) - (o[b.priority] ?? 4);
+  });
+  el.innerHTML = tasks
+    .filter(t => currentFilter === 'ALL' || t.priority === currentFilter)
+    .map(t => `
+    <div class="tr ${t.done ? 'done' : ''}" onclick="${isAdmin ? `toggleTask('fixes','${t.id}')` : ''}">
+      <div class="cb"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+      <div class="tn">${esc(t.task)}</div>
+      <span class="badge badge-${t.priority}">${t.priority}</span>
+      <span class="td">${t.done && t.date ? esc(t.date) : ''}</span>
+    </div>`).join('');
+}
+
+function renderPending() {
+  const el = document.getElementById('pList');
+  const tasks = Object.values(data.pending || {});
+  el.innerHTML = tasks.map(t => `
+    <div class="tr ${t.done ? 'done' : ''}" onclick="${isAdmin ? `toggleTask('pending','${t.id}')` : ''}">
+      <div class="cb"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+      <div class="tn">${esc(t.task)}</div>
+      <span class="badge badge-PENDING">PENDING</span>
+      <span class="td">${t.done && t.date ? esc(t.date) : ''}</span>
+    </div>`).join('');
+}
+
+function updateStats() {
+  const fixes = Object.values(data.fixes);
+  const done = fixes.filter(t => t.done).length;
+  const total = fixes.length;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  const urgLeft = fixes.filter(t => !t.done && t.priority === 'URGENT').length;
+  const highLeft = fixes.filter(t => !t.done && t.priority === 'HIGH').length;
+  const medLeft = fixes.filter(t => !t.done && t.priority === 'MEDIUM').length;
+
+  document.getElementById('sAll').textContent = pct + '%';
+  document.getElementById('sUrg').textContent = urgLeft;
+  document.getElementById('sHigh').textContent = highLeft;
+  document.getElementById('sMed').textContent = medLeft;
+  document.getElementById('sDone').textContent = done + '/' + total;
+  document.getElementById('fC').textContent = done;
+  document.getElementById('fBar').style.width = (total ? (done / total) * 100 : 0) + '%';
+}
+
+function filt(p, btn) {
+  currentFilter = p;
+  document.querySelectorAll('.fchip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderFixes();
+}
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+function showToast(msg, isErr) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isErr ? ' err' : '');
+  setTimeout(() => t.className = 'toast', 2500);
+}
+</script>
+</body>
+</html>
